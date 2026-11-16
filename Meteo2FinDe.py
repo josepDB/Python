@@ -14,12 +14,12 @@ st.set_page_config(page_title="Dashboard Meteorològic XEMA", layout="wide")
 st.title("🌦️ Anàlisi de Dades Meteorològiques de Catalunya (XEMA)")
 
 # Nom del fitxer CSV (canvia'l si el teu fitxer té un altre nom)
-FITXER_CSV = "./dat/Carto_XEMA.csv"  #modificat
+FITXER_CSV = "./dat/Carto_XEMA.zip"  #modificat
 
 @st.cache_data
-def carregar_dades(ruta,tipus=""):
+def carregar_dades(ruta,tipus="",compri=""):
     # Llegim el CSV ignoran possibles línies finals incompletes
-    df = pd.read_csv(ruta, on_bad_lines="skip", dtype=tipus)#, decimal=','
+    df = pd.read_csv(ruta, on_bad_lines="skip", compression=compri, dtype=tipus)#, decimal=','
     
     # Eliminem files que no tinguin Estat o VALOR vàlid (per exemple, l'última fila tallada)
     #df = df.dropna(subset=["DATA_LECTURA", "CODI_ESTACIO", "CODI_VARIABLE", "VALOR", "Estat"]).copy()
@@ -48,7 +48,7 @@ def carregar_dades(ruta,tipus=""):
     return df
 
 try:
-    df = carregar_dades(FITXER_CSV,{'CODI_VARIABLE':str, 'VALOR': float,'LATITUD': float, 'LONGITUD': float})
+    df = carregar_dades(FITXER_CSV,{'CODI_VARIABLE':str, 'VALOR': float,'LATITUD': float, 'LONGITUD': float},'zip')
 except FileNotFoundError:
     st.error(f"No s'ha trobat el fitxer '{FITXER_CSV}'. Posa'l a la mateixa carpeta que aquest script o puja'l aquí sota.")
     fitxer_pujat = st.file_uploader("Puja el fitxer CSV de Meteocat", type=["csv"])
